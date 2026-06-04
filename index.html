@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rádio Jovem FM – Ao Vivo Agora</title>
+<meta name="description" content="Ouça Rádio Jovem FM ao vivo. A melhor música sertaneja, pop e romântica 24 horas por dia. De Boa Vista da Aparecida para o mundo!">
+<meta property="og:title" content="Rádio Jovem FM">
+<meta property="og:description" content="Ouça ao vivo agora! A rádio que toca o seu coração.">
+<meta property="og:image" content="assets/logo.png">
+<link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ===========================
+   RESET & ROOT
+=========================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #F5A623;
+  --amber: #E8650A;
+  --pink: #E91E8C;
+  --cyan: #00D4FF;
+  --purple: #7B2FBE;
+  --bg: #060610;
+  --bg2: #0D0D1F;
+  --bg3: #131328;
+  --bg4: #1A1A35;
+  --glass: rgba(19, 19, 40, 0.85);
+  --border: rgba(245, 166, 35, 0.15);
+  --border2: rgba(245, 166, 35, 0.35);
+  --text: #F2F0F8;
+  --muted: #6E6C8A;
+  --grad-main: linear-gradient(135deg, var(--amber), var(--gold), var(--pink));
+  --grad-cool: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+  --glow-gold: 0 0 40px rgba(232, 101, 10, 0.4);
+  --glow-pink: 0 0 40px rgba(233, 30, 140, 0.4);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ===========================
+   CUSTOM CURSOR
+=========================== */
+.cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(245,166,35,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.12s ease;
+}
+
+/* ===========================
+   BACKGROUND FX
+=========================== */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 12s ease-in-out infinite;
+}
+.orb1 { width: 600px; height: 600px; background: rgba(232,101,10,0.08); top: -200px; left: -200px; animation-delay: 0s; }
+.orb2 { width: 500px; height: 500px; background: rgba(233,30,140,0.07); bottom: -150px; right: -100px; animation-delay: 4s; }
+.orb3 { width: 400px; height: 400px; background: rgba(0,212,255,0.05); top: 40%; left: 40%; animation-delay: 8s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+/* ===========================
+   NAVBAR
+=========================== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 6%;
+  background: rgba(6, 6, 16, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.nav-logo img {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  border-radius: 10px;
+  filter: drop-shadow(0 0 8px rgba(245,166,35,0.5));
+}
+.nav-logo-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.nav-logo-sub {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.live-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(233,30,140,0.12);
+  border: 1px solid rgba(233,30,140,0.4);
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: var(--pink);
+  border-radius: 50%;
+  animation: livepulse 1.4s infinite;
+  box-shadow: 0 0 0 0 rgba(233,30,140,0.7);
+}
+@keyframes livepulse {
+  0% { box-shadow: 0 0 0 0 rgba(233,30,140,0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(233,30,140,0); }
+  100% { box-shadow: 0 0 0 0 rgba(233,30,140,0); }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad-main);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+  border-radius: 2px;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.btn-pedir {
+  background: var(--grad-main);
+  color: #000 !important;
+  font-weight: 800 !important;
+  padding: 9px 22px;
+  border-radius: 25px;
+  font-size: 13px !important;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 20px rgba(232,101,10,0.35);
+  transition: all 0.2s !important;
+}
+.btn-pedir:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 30px rgba(232,101,10,0.5) !important; }
+.btn-pedir::after { display: none !important; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  width: 24px; height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: all 0.3s;
+  display: block;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 68px; left: 0; right: 0;
+  background: rgba(13,13,31,0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 6%;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 99;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--gold); }
+
+/* ===========================
+   HERO
+=========================== */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 6% 60px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  width: 100%;
+  animation: fadeUp 0.8s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.eyebrow-line {
+  width: 40px; height: 1px;
+  background: var(--grad-main);
+}
+
+.hero-logo {
+  width: 140px; height: 140px;
+  object-fit: contain;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  filter: drop-shadow(0 0 30px rgba(232,101,10,0.6)) drop-shadow(0 0 60px rgba(233,30,140,0.3));
+  animation: logoBreathe 4s ease-in-out infinite;
+}
+@keyframes logoBreathe {
+  0%, 100% { filter: drop-shadow(0 0 30px rgba(232,101,10,0.6)) drop-shadow(0 0 60px rgba(233,30,140,0.3)); }
+  50% { filter: drop-shadow(0 0 50px rgba(232,101,10,0.9)) drop-shadow(0 0 90px rgba(233,30,140,0.5)); }
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 10vw, 110px);
+  letter-spacing: 4px;
+  line-height: 0.9;
+  margin-bottom: 16px;
+}
+.hero-title .line1 { display: block; color: var(--text); }
+.hero-title .line2 {
+  display: block;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(232,101,10,0.5));
+}
+.hero-title .line3 {
+  display: block;
+  background: var(--grad-cool);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 60%;
+  letter-spacing: 12px;
+  margin-top: 8px;
+}
+
+.hero-tagline {
+  font-size: clamp(15px, 2.5vw, 18px);
+  color: var(--muted);
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 48px;
+}
+.hero-tagline strong { color: var(--gold); font-weight: 700; }
+
+/* ===========================
+   PLAYER CARD
+=========================== */
+.player-wrap {
+  animation: fadeUp 0.9s 0.2s ease both;
+}
+
+.player-card {
+  background: var(--glass);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 80px rgba(232,101,10,0.1), inset 0 1px 0 rgba(255,255,255,0.06);
+  max-width: 580px;
+  margin: 0 auto;
+}
+.player-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--grad-main);
+}
+.player-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% -30%, rgba(232,101,10,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.player-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.vinyl {
+  position: relative;
+  width: 70px; height: 70px;
+  flex-shrink: 0;
+}
+.vinyl-disc {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #1A1A35, #2A2A50, #1A1A35, #2A2A50);
+  border: 3px solid rgba(245,166,35,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.vinyl-disc::before {
+  content: '';
+  position: absolute;
+  width: 20px; height: 20px;
+  background: var(--bg3);
+  border-radius: 50%;
+  border: 2px solid rgba(245,166,35,0.3);
+}
+.vinyl-disc i {
+  font-size: 18px;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+}
+.vinyl-disc.spinning { animation: vinylSpin 3s linear infinite; }
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
+.vinyl-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,101,10,0.3), transparent 70%);
+  animation: vinylGlow 2s ease-in-out infinite alternate;
+  opacity: 0;
+}
+.vinyl-glow.active { opacity: 1; }
+@keyframes vinylGlow {
+  from { transform: scale(0.9); opacity: 0.5; }
+  to { transform: scale(1.1); opacity: 1; }
+}
+
+.song-details { flex: 1; text-align: left; }
+.now-label {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.song-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.song-artist {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* VISUALIZER */
+.visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+}
+.vbar {
+  width: 4px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, var(--pink), var(--amber));
+  height: 4px;
+  transition: height 0.12s ease;
+  flex-shrink: 0;
+}
+
+/* WAVEFORM PROGRESS */
+.waveform-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.waveform {
+  flex: 1;
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.waveform-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--amber), var(--gold), var(--pink));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+.waveform-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px; top: 50%;
+  transform: translateY(-50%);
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.waveform:hover .waveform-fill::after { opacity: 1; }
+.wave-time { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+
+/* CONTROLS */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.ctrl-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: rgba(26,26,53,0.5);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.ctrl-btn:hover { border-color: var(--gold); color: var(--gold); transform: scale(1.08); }
+
+.btn-play-main {
+  width: 68px !important;
+  height: 68px !important;
+  border-radius: 50% !important;
+  background: var(--grad-main) !important;
+  border: none !important;
+  color: #000 !important;
+  font-size: 24px !important;
+  box-shadow: 0 0 30px rgba(232,101,10,0.5);
+  transition: all 0.2s !important;
+}
+.btn-play-main:hover { transform: scale(1.1) !important; box-shadow: 0 0 50px rgba(232,101,10,0.8) !important; }
+.btn-play-main.playing { animation: playPulse 2s ease-in-out infinite; }
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(232,101,10,0.5); }
+  50% { box-shadow: 0 0 60px rgba(232,101,10,0.9), 0 0 100px rgba(233,30,140,0.4); }
+}
+
+/* VOLUME */
+.vol-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.vol-row i { color: var(--muted); font-size: 14px; width: 16px; text-align: center; }
+.vol-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg4);
+  outline: none;
+  cursor: pointer;
+}
+.vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(245,166,35,0.6);
+}
+
+/* PLAYER FOOTER */
+.player-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.listeners {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.listeners i { color: var(--pink); }
+.listeners strong { color: var(--text); }
+
+.share-row { display: flex; gap: 8px; }
+.share-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.share-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,166,35,0.08); }
+
+/* SCROLL HINT */
+.scroll-hint {
+  position: absolute;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: scrollBounce 2s ease-in-out infinite;
+  cursor: pointer;
+}
+.scroll-hint i { font-size: 18px; }
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+  50% { transform: translateX(-50%) translateY(6px); opacity: 1; }
+}
+
+/* ===========================
+   SECTIONS SHARED
+=========================== */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 90px 6%;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.section-title span {
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.section-desc {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===========================
+   STATS BAR
+=========================== */
+.stats-bar {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 6%;
+  position: relative;
+  z-index: 1;
+}
+.stats-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.stat-item {
+  text-align: center;
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 2px;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* ===========================
+   PROGRAMAÇÃO
+=========================== */
+.prog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.prog-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.prog-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--amber), var(--gold));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.prog-card:hover {
+  border-color: rgba(245,166,35,0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.prog-card:hover::before { opacity: 1; }
+.prog-card.ao-vivo {
+  border-color: rgba(233,30,140,0.4);
+  background: rgba(19,19,40,0.9);
+}
+.prog-card.ao-vivo::before {
+  background: linear-gradient(180deg, var(--pink), var(--purple));
+  opacity: 1;
+}
+
+.prog-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.prog-live-badge {
+  background: var(--pink);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  animation: blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.prog-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1;
+}
+.prog-host {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.prog-genre {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(245,166,35,0.08);
+  border: 1px solid rgba(245,166,35,0.2);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ===========================
+   PEDIDO DE MÚSICA
+=========================== */
+.pedido-section {
+  background: linear-gradient(180deg, transparent, rgba(233,30,140,0.04), transparent);
+}
+
+.pedido-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pedido-info h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.pedido-info h3 span {
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.pedido-info p {
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+.pedido-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.feat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.feat-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.pedido-form-card {
+  background: var(--glass);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+.pedido-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pink), var(--amber));
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.form-input {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 13px 16px;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s;
+}
+.form-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+}
+.form-input::placeholder { color: var(--muted); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn-enviar {
+  width: 100%;
+  background: var(--grad-main);
+  border: none;
+  color: #000;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(232,101,10,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-enviar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 35px rgba(232,101,10,0.6);
+}
+
+/* ===========================
+   SOBRE / CONTATO
+=========================== */
+.sobre-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.sobre-text h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+.sobre-text h3 span { background: var(--grad-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.sobre-text p {
+  color: var(--muted);
+  line-height: 1.9;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.contact-items { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s;
+}
+.contact-item:hover { border-color: var(--gold); background: rgba(245,166,35,0.06); transform: translateX(4px); }
+.contact-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.ci-whats { background: rgba(37,211,102,0.12); color: #25D366; }
+.ci-insta { background: rgba(233,30,140,0.12); color: var(--pink); }
+.ci-face { background: rgba(66,103,178,0.15); color: #4267B2; }
+.ci-mail { background: rgba(245,166,35,0.12); color: var(--gold); }
+.contact-label { font-size: 13px; color: var(--muted); }
+.contact-value { font-size: 14px; font-weight: 700; }
+
+/* ===========================
+   FOOTER
+=========================== */
+footer {
+  position: relative;
+  z-index: 1;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 50px 6% 28px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 50px;
+  margin-bottom: 40px;
+}
+.footer-brand-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 3px;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+.footer-desc {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 280px;
+}
+.footer-social { display: flex; gap: 10px; margin-top: 18px; }
+.fs-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.fs-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,166,35,0.08); }
+
+.footer-col h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--text); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-bottom a { color: var(--gold); text-decoration: none; }
+
+/* ===========================
+   TOAST
+=========================== */
+.toast {
+  position: fixed;
+  bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--grad-main);
+  color: #000;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 50px;
+  z-index: 9999;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 32px rgba(232,101,10,0.5);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .pedido-wrap { grid-template-columns: 1fr; }
+  .sobre-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 30px; }
+  .player-card { padding: 24px 20px; }
+}
+@media (max-width: 600px) {
+  .prog-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-title { font-size: 52px; }
+  .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="glow-orb orb1"></div>
+<div class="glow-orb orb2"></div>
+<div class="glow-orb orb3"></div>
+
+<!-- ========================
+     NAVBAR
+======================== -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <img src="assets/logo.png" alt="Rádio Jovem FM" onerror="this.style.display='none'">
+      <div>
+        <div class="nav-logo-name">JOVEM FM</div>
+        <div class="nav-logo-sub">Rádio Online</div>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="#programacao">Programação</a>
+      <a href="#pedido">Pedir Música</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#pedido" class="btn-pedir"><i class="fas fa-music"></i> Pedir Agora</a>
+    </div>
+
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#programacao" onclick="toggleMenu()"><i class="fas fa-calendar-alt"></i> Programação</a>
+  <a href="#pedido" onclick="toggleMenu()"><i class="fas fa-music"></i> Pedir Música</a>
+  <a href="#sobre" onclick="toggleMenu()"><i class="fas fa-info-circle"></i> Sobre</a>
+  <a href="https://wa.me/5545999999999" target="_blank" onclick="toggleMenu()"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+</div>
+
+<!-- ========================
+     HERO + PLAYER
+======================== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      Rádio Online ao vivo
+      <span class="eyebrow-line"></span>
+    </div>
+
+    <img src="assets/logo.png" alt="Rádio Jovem FM" class="hero-logo"
+         onerror="this.style.display='none'">
+
+    <h1 class="hero-title">
+      <span class="line1">RÁDIO</span>
+      <span class="line2">JOVEM FM</span>
+      <span class="line3">24 horas no ar</span>
+    </h1>
+
+    <p class="hero-tagline">
+      A rádio que toca o seu coração — de <strong>Boa Vista da Aparecida</strong> para o mundo
+    </p>
+
+    <!-- PLAYER -->
+    <div class="player-wrap">
+      <div class="player-card">
+
+        <div class="player-top">
+          <div class="vinyl">
+            <div class="vinyl-disc" id="vinylDisc">
+              <i class="fas fa-music" id="vinylIcon"></i>
+            </div>
+            <div class="vinyl-glow" id="vinylGlow"></div>
+          </div>
+
+          <div class="song-details">
+            <div class="now-label">▶ Tocando Agora</div>
+            <div class="song-title" id="songTitle">Clique Play para ouvir</div>
+            <div class="song-artist" id="songArtist">Rádio Jovem FM • Ao Vivo</div>
+          </div>
+
+          <div class="visualizer" id="visualizer"></div>
+        </div>
+
+        <div class="waveform-row">
+          <span class="wave-time">AO VIVO</span>
+          <div class="waveform">
+            <div class="waveform-fill" id="waveformFill"></div>
+          </div>
+          <span class="wave-time" id="playerStatus">00:00</span>
+        </div>
+
+        <div class="controls-row">
+          <button class="ctrl-btn" onclick="showToast('⏮ Música anterior')" title="Anterior" aria-label="Anterior">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button class="ctrl-btn" onclick="toggleMute()" id="btnMute" title="Mudo" aria-label="Mudo">
+            <i class="fas fa-volume-up"></i>
+          </button>
+          <button class="ctrl-btn btn-play-main" id="btnPlay" onclick="togglePlay()" aria-label="Play/Pause">
+            <i class="fas fa-play" id="playIcon"></i>
+          </button>
+          <button class="ctrl-btn" id="btnHeart" onclick="toggleFav()" title="Favoritar" aria-label="Favoritar">
+            <i class="far fa-heart" id="heartIcon"></i>
+          </button>
+          <button class="ctrl-btn" onclick="showToast('⏭ Próxima música')" title="Próxima" aria-label="Próxima">
+            <i class="fas fa-step-forward"></i>
+          </button>
+        </div>
+
+        <div class="vol-row">
+          <i class="fas fa-volume-off"></i>
+          <input type="range" class="vol-slider" id="volSlider"
+                 min="0" max="100" value="80"
+                 oninput="setVolume(this.value)" aria-label="Volume">
+          <i class="fas fa-volume-up"></i>
+        </div>
+
+        <div class="player-footer">
+          <div class="listeners">
+            <i class="fas fa-headphones-alt"></i>
+            <strong id="listenerCount">1.284</strong>&nbsp;ouvindo agora
+          </div>
+          <div class="share-row">
+            <a class="share-btn" href="https://wa.me/?text=Ouça%20ao%20vivo%20a%20Rádio%20Jovem%20FM!" target="_blank" title="WhatsApp" aria-label="Compartilhar no WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+            <a class="share-btn" href="https://instagram.com/" target="_blank" title="Instagram" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a class="share-btn" href="https://facebook.com/" target="_blank" title="Facebook" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" onclick="document.getElementById('programacao').scrollIntoView({behavior:'smooth'})">
+    <span>Rolar</span>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ========================
+     STATS BAR
+======================== -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-number">24H</div>
+      <div class="stat-label">No Ar Todo Dia</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">+2800</div>
+      <div class="stat-label">Músicas no Acervo</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">+1K</div>
+      <div class="stat-label">Ouvintes por Dia</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Gratuito & Online</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     PROGRAMAÇÃO
+======================== -->
+<section class="section" id="programacao">
+  <div class="section-header">
+    <div class="section-tag">📻 Grade Completa</div>
+    <h2 class="section-title">Nossa <span>Programação</span></h2>
+    <p class="section-desc">Confira a grade de segunda a domingo e não perca seu programa favorito</p>
+  </div>
+
+  <div class="prog-grid">
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-sun"></i> 06h00 – 09h00</div>
+      <div class="prog-name">Bom Dia Total</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Rodrigo Silva</div>
+      <span class="prog-genre"><i class="fas fa-music"></i> Pop · Sertanejo</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-coffee"></i> 09h00 – 12h00</div>
+      <div class="prog-name">Rádio Total</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Ana Paula</div>
+      <span class="prog-genre"><i class="fas fa-fire"></i> Hits do Momento</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-newspaper"></i> 12h00 – 14h00</div>
+      <div class="prog-name">Jornal Jovem</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Bruno Castro</div>
+      <span class="prog-genre"><i class="fas fa-broadcast-tower"></i> Notícias</span>
+    </div>
+    <div class="prog-card ao-vivo">
+      <div class="prog-time">
+        <i class="fas fa-guitar"></i> 14h00 – 16h00
+        <span class="prog-live-badge">AO VIVO</span>
+      </div>
+      <div class="prog-name">Sertanejo Total</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Marcos Vieira</div>
+      <span class="prog-genre"><i class="fas fa-star"></i> Sertanejo Universitário</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-bolt"></i> 16h00 – 18h00</div>
+      <div class="prog-name">Flash Hit</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Ana Paula</div>
+      <span class="prog-genre"><i class="fas fa-headphones"></i> Pop · Funk · Eletrônico</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-car"></i> 18h00 – 20h00</div>
+      <div class="prog-name">Drive Total</div>
+      <div class="prog-host"><i class="fas fa-microphone-alt"></i> Ricardo Fonseca</div>
+      <span class="prog-genre"><i class="fas fa-road"></i> Variado</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-heart"></i> 20h00 – 22h00</div>
+      <div class="prog-name">Noite Romântica</div>
+      <div class="prog-host"><i class="fas fa-music"></i> Playlist Especial</div>
+      <span class="prog-genre"><i class="fas fa-heart"></i> Romântico</span>
+    </div>
+    <div class="prog-card">
+      <div class="prog-time"><i class="fas fa-moon"></i> 22h00 – 06h00</div>
+      <div class="prog-name">Madrugada Total</div>
+      <div class="prog-host"><i class="fas fa-robot"></i> Automático</div>
+      <span class="prog-genre"><i class="fas fa-infinity"></i> Todos os Ritmos</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     PEDIDO DE MÚSICA
+======================== -->
+<section class="section pedido-section" id="pedido">
+  <div class="pedido-wrap">
+    <div class="pedido-info">
+      <div class="section-tag">🎵 Interaja conosco</div>
+      <h3>Peça sua <span>Música</span> Favorita</h3>
+      <p>Mande seu pedido e uma dedicatória especial. Nossa equipe toca a sua música ao vivo e lê sua mensagem para toda a região!</p>
+      <div class="pedido-features">
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fab fa-whatsapp"></i></div>
+          Pedido enviado direto pelo WhatsApp
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-heart"></i></div>
+          Mande uma dedicatória especial
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-clock"></i></div>
+          Respondemos em poucos minutos
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-broadcast-tower"></i></div>
+          Sua música tocada ao vivo na rádio
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pedido-form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Seu Nome</label>
+            <input class="form-input" id="fNome" type="text" placeholder="Ex: Maria Silva">
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp</label>
+            <input class="form-input" id="fWhats" type="tel" placeholder="(45) 99999-9999">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Música Desejada</label>
+          <input class="form-input" id="fMusica" type="text" placeholder="Ex: Evidências – Chitãozinho &amp; Xororó">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dedicatória (opcional)</label>
+          <input class="form-input" id="fDedica" type="text" placeholder="Ex: Para o amor da minha vida ❤️">
+        </div>
+        <button class="btn-enviar" onclick="enviarPedido()">
+          <i class="fab fa-whatsapp"></i> ENVIAR PELO WHATSAPP
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     SOBRE & CONTATO
+======================== -->
+<section class="section" id="sobre" style="background: linear-gradient(180deg, transparent, rgba(0,212,255,0.03), transparent)">
+  <div class="sobre-grid">
+    <div class="sobre-text">
+      <div class="section-tag">📍 Boa Vista da Aparecida – PR</div>
+      <h3>Sobre a <span>Jovem FM</span></h3>
+      <p>A Rádio Jovem FM nasceu com uma missão: levar música de qualidade, alegria e informação para cada lar, carro e coração da nossa região.</p>
+      <p>Com uma grade variada que vai do sertanejo universitário ao pop romântico, estamos no ar 24 horas por dia para fazer parte dos momentos mais especiais da sua vida.</p>
+      <p>Sintonize, curta e peça sua música. A Jovem FM é sua!</p>
+    </div>
+
+    <div>
+      <div class="section-tag" style="margin-bottom: 20px">📞 Fale Conosco</div>
+      <div class="contact-items">
+        <a class="contact-item" href="https://wa.me/5545999999999" target="_blank">
+          <div class="contact-icon ci-whats"><i class="fab fa-whatsapp"></i></div>
+          <div>
+            <div class="contact-label">WhatsApp</div>
+            <div class="contact-value">(45) 99999-9999</div>
+          </div>
+        </a>
+        <a class="contact-item" href="https://instagram.com/" target="_blank">
+          <div class="contact-icon ci-insta"><i class="fab fa-instagram"></i></div>
+          <div>
+            <div class="contact-label">Instagram</div>
+            <div class="contact-value">@radiojovemfm</div>
+          </div>
+        </a>
+        <a class="contact-item" href="https://facebook.com/" target="_blank">
+          <div class="contact-icon ci-face"><i class="fab fa-facebook-f"></i></div>
+          <div>
+            <div class="contact-label">Facebook</div>
+            <div class="contact-value">/radiojovemfm</div>
+          </div>
+        </a>
+        <a class="contact-item" href="mailto:contato@radiojovemfm.com.br">
+          <div class="contact-icon ci-mail"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="contact-label">E-mail</div>
+            <div class="contact-value">contato@radiojovemfm.com.br</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     FOOTER
+======================== -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">RÁDIO JOVEM FM</div>
+      <p class="footer-desc">A rádio que toca o seu coração. Música, alegria e informação 24 horas por dia de Boa Vista da Aparecida para todo o Brasil.</p>
+      <div class="footer-social">
+        <a class="fs-btn" href="https://instagram.com/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a class="fs-btn" href="https://facebook.com/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a class="fs-btn" href="https://wa.me/5545999999999" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a class="fs-btn" href="https://youtube.com/" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navegação</h4>
+      <a href="#programacao"><i class="fas fa-calendar-alt"></i> Programação</a>
+      <a href="#pedido"><i class="fas fa-music"></i> Pedir Música</a>
+      <a href="#sobre"><i class="fas fa-info-circle"></i> Sobre</a>
+      <a href="admin/index.html"><i class="fas fa-lock"></i> Área Admin</a>
+    </div>
+    <div class="footer-col">
+      <h4>Programas</h4>
+      <a href="#programacao">Bom Dia Total</a>
+      <a href="#programacao">Sertanejo Total</a>
+      <a href="#programacao">Flash Hit</a>
+      <a href="#programacao">Noite Romântica</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Rádio Jovem FM · Boa Vista da Aparecida – PR · Todos os direitos reservados.</span>
+    <a href="admin/index.html"><i class="fas fa-shield-alt"></i> Admin</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<audio id="radioAudio" preload="none"></audio>
+
+<!-- ========================
+     SCRIPTS
+======================== -->
+<script>
+// ============================================================
+// ⚠️  CONFIGURE AQUI — edite estas linhas com seus dados reais
+// ============================================================
+const CONFIG = {
+  streamURL:   "https://SEU_SERVIDOR:8000/stream",  // ← URL do seu stream de rádio
+  whatsapp:    "5545999999999",                     // ← Seu número (DDI+DDD+número)
+  stationName: "Rádio Jovem FM",
+  cidade:      "Boa Vista da Aparecida – PR"
+};
+// ============================================================
+
+// ----- AUDIO PLAYER -----
+const audio  = document.getElementById('radioAudio');
+const vizEl  = document.getElementById('visualizer');
+audio.src    = CONFIG.streamURL;
+let playing  = false;
+let muted    = false;
+let fav      = false;
+let vizBars  = [];
+let vizTimer = null;
+let waveTimer= null;
+let elapsed  = 0;
+
+function togglePlay() {
+  if (!playing) startPlay();
+  else stopPlay();
+}
+
+function startPlay() {
+  audio.play()
+    .then(() => {
+      playing = true;
+      document.getElementById('playIcon').className = 'fas fa-pause';
+      document.getElementById('btnPlay').classList.add('playing');
+      document.getElementById('vinylDisc').classList.add('spinning');
+      document.getElementById('vinylGlow').classList.add('active');
+      document.getElementById('songTitle').textContent = CONFIG.stationName;
+      document.getElementById('songArtist').textContent = 'Ao Vivo • ' + CONFIG.cidade;
+      startViz();
+      startWave();
+    })
+    .catch(() => {
+      showToast('⚠️ Configure a URL do stream no index.html');
+    });
+}
+
+function stopPlay() {
+  audio.pause();
+  playing = false;
+  document.getElementById('playIcon').className = 'fas fa-play';
+  document.getElementById('btnPlay').classList.remove('playing');
+  document.getElementById('vinylDisc').classList.remove('spinning');
+  document.getElementById('vinylGlow').classList.remove('active');
+  stopViz();
+  clearInterval(waveTimer);
+}
+
+function setVolume(v) {
+  audio.volume = v / 100;
+  muted = v == 0;
+  document.querySelector('#btnMute i').className = v == 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+}
+
+function toggleMute() {
+  muted = !muted;
+  audio.muted = muted;
+  document.querySelector('#btnMute i').className = muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+  document.getElementById('volSlider').value = muted ? 0 : 80;
+}
+
+function toggleFav() {
+  fav = !fav;
+  document.getElementById('heartIcon').className = fav ? 'fas fa-heart' : 'far fa-heart';
+  document.getElementById('heartIcon').style.color = fav ? 'var(--pink)' : '';
+  showToast(fav ? '❤️ Adicionado aos favoritos!' : '💔 Removido dos favoritos.');
+}
+
+// ----- VISUALIZER -----
+function buildViz() {
+  vizEl.innerHTML = '';
+  vizBars = [];
+  for (let i = 0; i < 14; i++) {
+    const b = document.createElement('div');
+    b.className = 'vbar';
+    vizEl.appendChild(b);
+    vizBars.push(b);
+  }
+}
+
+function startViz() {
+  buildViz();
+  vizTimer = setInterval(() => {
+    vizBars.forEach((b, i) => {
+      const h = 4 + Math.abs(Math.sin(Date.now() / 300 + i * 0.6)) * 28 + Math.random() * 8;
+      b.style.height = h + 'px';
+    });
+  }, 80);
+}
+
+function stopViz() {
+  clearInterval(vizTimer);
+  vizBars.forEach(b => b.style.height = '4px');
+}
+
+// ----- WAVEFORM -----
+function startWave() {
+  elapsed = 0;
+  clearInterval(waveTimer);
+  waveTimer = setInterval(() => {
+    elapsed++;
+    const fill = Math.min((elapsed / 240) * 100, 98);
+    document.getElementById('waveformFill').style.width = fill + '%';
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    document.getElementById('playerStatus').textContent = `${m}:${String(s).padStart(2, '0')}`;
+  }, 1000);
+}
+
+buildViz();
+
+// ----- PEDIDO -----
+function enviarPedido() {
+  const nome   = document.getElementById('fNome').value.trim();
+  const musica = document.getElementById('fMusica').value.trim();
+  const dedica = document.getElementById('fDedica').value.trim();
+  const whats  = document.getElementById('fWhats').value.trim();
+
+  if (!nome || !musica) {
+    showToast('⚠️ Preencha seu nome e a música desejada!');
+    return;
+  }
+
+  let msg = `🎵 *PEDIDO DE MÚSICA*\n*${CONFIG.stationName}*\n\n`;
+  msg += `👤 *Ouvinte:* ${nome}`;
+  if (whats) msg += `\n📱 *WhatsApp:* ${whats}`;
+  msg += `\n🎶 *Música:* ${musica}`;
+  if (dedica) msg += `\n💌 *Dedicatória:* ${dedica}`;
+
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+  showToast('🎶 Abrindo WhatsApp! Seu pedido está pronto.');
+
+  document.getElementById('fNome').value = '';
+  document.getElementById('fMusica').value = '';
+  document.getElementById('fDedica').value = '';
+  document.getElementById('fWhats').value = '';
+}
+
+// ----- TOAST -----
+function showToast(msg, dur = 3200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ----- MENU MOBILE -----
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ----- LISTENER COUNT -----
+setInterval(() => {
+  const v = 1100 + Math.floor(Math.random() * 300);
+  document.getElementById('listenerCount').textContent = v.toLocaleString('pt-BR');
+}, 9000);
+
+// ----- CUSTOM CURSOR -----
+const cur  = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left  = mx - 5 + 'px';
+  cur.style.top   = my - 5 + 'px';
+});
+
+function animRing() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  ring.style.left = rx - 18 + 'px';
+  ring.style.top  = ry - 18 + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+document.querySelectorAll('a, button, input, .prog-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'scale(2.5)';
+    ring.style.transform = 'scale(1.4)';
+    ring.style.borderColor = 'rgba(233,30,140,0.7)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'scale(1)';
+    ring.style.transform = 'scale(1)';
+    ring.style.borderColor = 'rgba(245,166,35,0.5)';
+  });
+});
+
+// ----- PARTICLE CANVAS -----
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const colors = ['rgba(232,101,10,', 'rgba(233,30,140,', 'rgba(245,166,35,', 'rgba(0,212,255,'];
+
+  for (let i = 0; i < 40; i++) {
+    particles.push({
+      x: Math.random() * (W || 1200),
+      y: Math.random() * (H || 800),
+      r: 0.5 + Math.random() * 1.5,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: -0.1 - Math.random() * 0.3,
+      c: colors[Math.floor(Math.random() * colors.length)],
+      a: 0.2 + Math.random() * 0.5
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c + p.a + ')';
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
